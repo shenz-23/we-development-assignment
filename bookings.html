@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Rentals - Booking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Open+Sans&display=swap" rel="stylesheet">
+
+    <style>
+            *{
+                box-sizing: border-box;
+            }
+
+            body{
+                margin: 0;
+                font-family: 'Open Sans', Arial, sans-serif;
+                color: #1d2b36;
+                background: #f7fbfd;
+            }
+
+            h1, h2, h3, .logo{
+                font-family: 'Montserrat', Arial, sans-serif;
+            }
+
+            header{
+                background-color: #023e8a;
+                color: white;
+                padding: 12px 5%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            
+
+            nav a{
+                color: white;
+                text-decoration: none;
+                margin-left: 20px;
+                font-weight: 600;
+            }
+
+            nav a:hover{
+                color: #ff6f59;
+            }
+
+            .formcard{
+                max-width: 520px;
+                margin: 40px auto;
+                background: white;
+                padding: 30px;
+                border-radius: 16px;
+                box-shadow: 0 6px 20px rgba(0,0,0,.15);
+            }
+
+            label{
+                display: block;
+                margin: 12px 0 4px;
+                font-weight: 600;
+            }
+
+            input, select{
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #b8c7d1;
+                border-radius: 8px;
+                font-size: 1rem;
+            }
+
+            .err{
+                color: #c1121f;
+                font-size: .85rem;
+                min-height: 1em;
+            }
+
+            .total{
+                background: #f4e4c1;
+                padding: 14px;
+                border-radius: 10px;
+                margin: 18px 0;
+                font-size: 1.2rem;
+                font-weight: 700;
+                text-align: center;
+            }
+
+            .btn{
+                display: inline-block;
+                background: #ff6f59;
+                color: white;
+                padding: 14px 34px;
+                border-radius: 30px;
+                font-weight: 700;
+                text-decoration: none;
+                border: 0;
+                cursor: pointer;
+                font-size: 1rem;
+                font-family: 'Montserrat', Arial, sans-serif;
+            }
+
+            .btn:hover{
+                background: #e55a45;
+            }
+
+            #msg{
+                margin-top: 16px;
+                padding: 14px;
+                border-radius: 10px;
+                background: #d8f3dc;
+                color: #1b4332;
+                display: none;
+                font-weight: 600;
+            }
+
+            footer{
+                background: #023e8a;
+                color: white;
+                text-align: center;
+                padding: 20px;
+            }
+        </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="fw-bold"> Easy Rentals</div>
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+            <a href="dashboard.html">Home</a>
+            <a href="dashboard.html">Contact</a>
+            <a href="bookings.html">Booking</a>
+            <a href="/vehicle_rental/logout.php">Log-out</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="formcard">
+
+            <h2>Rent Your vehicle</h2>
+
+            <form id="bookingForm" novalidate>
+
+                <label for="name">Full Name</label>
+                <input type="text" id="name">
+                <div class="err" id="eName"></div>
+
+                <label for="email">Email Address</label>
+                <input type="email" id="email">
+                <div class="err" id="eEmail"></div>
+
+                <label for="phone">Contact Number</label>
+                <input type="tel" id="phone">
+                <div class="err" id="ephone"></div>
+
+                <label for="vehicleType">Vehicle type</label>
+                <select id="vehicleType">
+                    <option value="">Select</option>
+                    <option value="car">Car</option>
+                    <option value="van">Van</option>
+                    <option value="bus">Bus</option>
+                </select>
+
+                <label for="dest">Vehicle brand</label>
+                <select id="dest">
+                    <option value="0">Select</option>
+                    <option value="8000">Toyota</option>
+                    <option value="9000">Nissan</option>
+                    <option value="12000">Mazda</option>
+                    <option value="15000">Ashok leyland</option>
+                    <option value="20000">Rosa</option>
+
+                </select>
+                <div class="err" id="eDest"></div>
+
+                <label for="days">Number of Rental days</label>
+                <input type="number" id="days" min="1" value="0">
+                <div class="err" id="eTrav"></div>
+
+                <label for="date">Departure Date</label>
+                <input type="date" id="date">
+                <div class="err" id="eDate"></div>
+
+                <div class="total">
+                    Total Cost: Rs.<span id="total">0</span>
+                </div>
+
+                <button class="btn" type="submit" style="width:100%">
+                    Confirm Booking
+                </button>
+
+            </form>
+
+            <div id="msg"></div>
+
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2026 Easy Rentals 
+    </footer>
+
+
+    <!-- JavaScript -->
+
+    <script>
+function calculateTotal() 
+{
+
+    var price = Number(document.getElementById("dest").value);
+
+    var days = Number(document.getElementById("days").value);
+
+    var total = price * days;
+
+    document.getElementById("total").innerHTML = total;
+}
+
+document.getElementById("dest").onchange = calculateTotal;
+document.getElementById("days").onchange = calculateTotal;
+document.getElementById("days").oninput = calculateTotal;
+
+
+document.getElementById("bookingForm").onsubmit = function(event) 
+{
+
+    event.preventDefault();
+
+    //we used var to
+    var name = document.getElementById("name").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var phone = document.getElementById("phone").value.trim();
+    var vehicleType = document.getElementById("vehicleType").value;
+    var brand = document.getElementById("dest").value;
+    var days = Number(document.getElementById("days").value);
+    var date = document.getElementById("date").value;
+
+    var valid = true;
+
+    document.getElementById("eName").innerHTML = "";
+    document.getElementById("eEmail").innerHTML = "";
+    document.getElementById("ephone").innerHTML = "";
+    document.getElementById("eDest").innerHTML = "";
+    document.getElementById("eTrav").innerHTML = "";
+    document.getElementById("eDate").innerHTML = "";
+    document.getElementById("msg").style.display = "none";
+
+
+    if (name == "") 
+    {
+        document.getElementById("eName").innerHTML =
+            "Full name is required.";
+        valid = false;
+    }
+
+
+    if (email == "") 
+    {
+        document.getElementById("eEmail").innerHTML =
+            "Email is required.";
+        valid = false;
+    }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) 
+    {
+    document.getElementById("eEmail").innerHTML =
+        "Enter a valid email.";
+    valid = false;
+}
+
+
+    if (phone == "") 
+    {
+        document.getElementById("ephone").innerHTML =
+            "Contact number is required.";
+        valid = false;
+    }
+    else if (!/^[0-9]{10}$/.test(phone)) 
+    {
+        document.getElementById("ephone").innerHTML =
+            "Enter a valid 10 digit contact number.";
+        valid = false;
+    }
+
+
+    if (vehicleType == "") 
+    {
+        document.getElementById("eDest").innerHTML =
+            "Please select a vehicle type.";
+        valid = false;
+    }
+
+
+    if (brand == "0") 
+    {
+        document.getElementById("eDest").innerHTML +=
+            " Please select a vehicle brand.";
+        valid = false;
+    }
+
+
+    if (days < 1 || !Number.isInteger(days)) 
+    {
+        document.getElementById("eTrav").innerHTML =
+            "Enter a valid number of rental days.";
+        valid = false;
+    }
+
+
+    if (date == "") 
+    {
+        document.getElementById("eDate").innerHTML =
+            "Departure date is required.";
+        valid = false;
+    }
+    else 
+    {
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        var selectedDate = new Date(date + "T00:00:00");
+
+        if (selectedDate < today) {
+            document.getElementById("eDate").innerHTML =
+                "Please choose today or a future date.";
+            valid = false;
+        }
+    }
+
+
+    if (valid == true) 
+    {
+
+        var message = document.getElementById("msg");
+
+        message.innerHTML =
+            "Booking confirmed successfully!";
+
+        message.style.display = "block";
+    }
+
+};
+
+    </script>
+
+</body>
+</html>
